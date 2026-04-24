@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salvanos Μεταφορές</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Karla:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e1117;--surface:#161b24;--surface2:#1e2533;--border:#2a3142;--text:#e8eaf0;--muted:#7880a0;--accent:#e8c97a;--blue:#5b8dee;--green:#3ec97a;--red:#e8564a;--orange:#e8a03a;--purple:#a78bfa}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Karla',sans-serif;font-size:14px;min-height:100vh;padding-bottom:70px}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar h1{font-family:'Playfair Display',serif;font-size:18px;color:var(--accent)}
+.btn-new{background:var(--accent);color:#0e1117;border:none;padding:7px 16px;border-radius:7px;font-family:'Karla',sans-serif;font-weight:700;font-size:12px;cursor:pointer}
+.bottom-tabs{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:50}
+.btab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;cursor:pointer;font-size:9px;color:var(--muted);font-weight:600;letter-spacing:.3px;transition:color .2s;gap:3px;border:none;background:none}
+.btab .icon{font-size:18px}
+.btab.active{color:var(--accent)}
+.page{display:none;padding:16px}.page.active{display:block}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sec-hdr h2{font-family:'Playfair Display',serif;font-size:16px;color:var(--text)}
+.today-date{font-size:11px;color:var(--muted);margin-bottom:14px}
+.today-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.tstat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.tstat .tsl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.tstat .tsv{font-size:20px;font-weight:700;margin-top:2px}
+.tsv.blue{color:var(--blue)}.tsv.green{color:var(--green)}.tsv.orange{color:var(--orange)}
+.task-list{display:flex;flex-direction:column;gap:8px}
+.task-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px;transition:opacity .3s}
+.task-card.done{opacity:.35}
+.task-card.done .tc-title{text-decoration:line-through;color:var(--muted)}
+.tc-top{display:flex;align-items:center;gap:8px}
+.tc-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);background:none;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .2s}
+.tc-check.checked{background:var(--green);border-color:var(--green);color:#fff}
+.tc-title{font-weight:700;font-size:13px;flex:1}
+.tc-type{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;flex-shrink:0}
+.type-perisilogi{background:rgba(91,141,238,.15);color:var(--blue)}
+.type-dianomi{background:rgba(232,201,122,.12);color:var(--accent)}
+.type-metafora{background:rgba(62,201,122,.12);color:var(--green)}
+.type-metakomisi{background:rgba(167,139,250,.15);color:var(--purple)}
+.tc-mid{display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap}
+.tc-phone{font-size:11px;color:var(--blue);text-decoration:none;font-weight:600}
+.tc-time{font-size:11px;background:var(--surface2);padding:1px 7px;border-radius:20px;color:var(--accent);font-weight:600}
+.tc-bot{margin-top:5px;display:flex;flex-direction:column;gap:2px}
+.tc-route{font-size:11px;color:var(--muted)}
+.tc-route span{color:var(--text);font-weight:500}
+.tc-note{font-size:10px;color:var(--muted);font-style:italic;margin-top:2px}
+.tc-actions{display:flex;gap:3px;margin-left:auto}
+.act-btn{background:none;border:none;cursor:pointer;font-size:13px;padding:2px 4px;border-radius:4px}
+.filters{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.filt{background:var(--surface2);border:1px solid var(--border);color:var(--muted);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Karla',sans-serif}
+.filt.active{background:var(--accent);color:#0e1117;border-color:var(--accent)}
+.offer-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px;margin-bottom:8px}
+.offer-card.confirmed{border-color:rgba(62,201,122,.3)}
+.offer-card.cancelled{opacity:.35}
+.oc-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.oc-name{font-weight:700;font-size:13px}
+.oc-price{font-size:14px;font-weight:700;color:var(--accent)}
+.oc-mid{display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:wrap}
+.oc-date{font-size:10px;color:var(--muted)}
+.oc-bot{display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap}
+.oc-status-btn{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:600;cursor:pointer;border:none;font-family:'Karla',sans-serif}
+.osb-wait{background:rgba(232,160,58,.12);color:var(--orange)}
+.osb-confirm{background:rgba(62,201,122,.12);color:var(--green)}
+.osb-cancel{background:rgba(232,86,74,.1);color:var(--red)}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cal-nav h3{font-family:'Playfair Display',serif;font-size:16px}
+.cal-nav-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 12px;border-radius:7px;cursor:pointer;font-size:16px;font-family:'Karla',sans-serif}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-day-hdr{text-align:center;font-size:10px;font-weight:600;color:var(--muted);padding:4px 0}
+.cal-day-hdr.wknd{color:var(--accent)}
+.cal-day{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 4px;min-height:52px;cursor:pointer}
+.cal-day.empty{background:transparent;border-color:transparent;cursor:default}
+.cal-day.today{border-color:var(--blue)}
+.cal-day.has-tasks{border-color:rgba(232,201,122,.4)}
+.cal-day-num{font-size:11px;font-weight:600;text-align:center;color:var(--muted)}
+.cal-day.today .cal-day-num{color:var(--blue)}
+.cal-day-dots{display:flex;gap:2px;justify-content:center;margin-top:3px;flex-wrap:wrap}
+.cal-dot{width:5px;height:5px;border-radius:50%}
+.todo-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:7px;transition:opacity .3s}
+.todo-card.done{opacity:.3}
+.todo-card.done .todo-title{text-decoration:line-through}
+.todo-card.urgent{border-left:3px solid var(--red)}
+.todo-top{display:flex;align-items:center;gap:8px}
+.todo-title{font-weight:600;font-size:13px;flex:1}
+.prio-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600}
+.prio-urgent{background:rgba(232,86,74,.12);color:var(--red)}
+.empty-state{color:var(--muted);font-style:italic;font-size:12px;padding:20px 0;text-align:center}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);z-index:200;align-items:flex-start;justify-content:center;padding:14px;overflow-y:auto}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;width:100%;max-width:440px;box-shadow:0 24px 80px rgba(0,0,0,.5);animation:mup .2s ease;margin:auto}
+@keyframes mup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.modal h3{font-family:'Playfair Display',serif;font-size:17px;color:var(--accent);margin-bottom:14px}
+.fg{margin-bottom:10px}
+.fg label{display:block;font-size:9px;color:var(--muted);margin-bottom:3px;font-weight:700;text-transform:uppercase;letter-spacing:.6px}
+.fg input,.fg select,.fg textarea{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:7px;font-family:'Karla',sans-serif;font-size:13px;transition:border-color .2s;-webkit-appearance:none;resize:none}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--accent)}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.modal-actions{display:flex;gap:8px;margin-top:14px}
+.btn-save{flex:1;background:var(--accent);color:#0e1117;border:none;padding:10px;border-radius:7px;font-family:'Karla',sans-serif;font-weight:700;font-size:13px;cursor:pointer}
+.btn-cancel{background:var(--surface2);color:var(--muted);border:1px solid var(--border);padding:10px 14px;border-radius:7px;font-family:'Karla',sans-serif;font-size:13px;cursor:pointer}
+.modal-tabs{display:flex;gap:6px;margin-bottom:16px}
+.modal-tab{flex:1;padding:7px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;text-align:center;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;font-family:'Karla',sans-serif}
+.modal-tab.active{background:var(--accent);color:#0e1117;border-color:var(--accent)}
+select option{background:#1a2030}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>🚛 Salvanos Μεταφορές</h1>
+  <button class="btn-new" onclick="openNewModal()">+ Νέο</button>
+</div>
+<div class="page active" id="page-today">
+  <div class="today-date" id="today-date"></div>
+  <div class="today-stats">
+    <div class="tstat"><div class="tsl">Εργασίες</div><div class="tsv blue" id="ts-total">0</div></div>
+    <div class="tstat"><div class="tsl">Εκκρεμείς</div><div class="tsv orange" id="ts-pending">0</div></div>
+    <div class="tstat"><div class="tsl">Ολοκλ.</div><div class="tsv green" id="ts-done">0</div></div>
+  </div>
+  <div class="sec-hdr"><h2>📋 Σήμερα</h2></div>
+  <div class="task-list" id="today-list"><div class="empty-state">Δεν υπάρχουν εργασίες σήμερα</div></div>
+</div>
+<div class="page" id="page-tasks">
+  <div class="filters">
+    <button class="filt active" onclick="filterTasks('all',this)">Όλες</button>
+    <button class="filt" onclick="filterTasks('pending',this)">Εκκρεμείς</button>
+    <button class="filt" onclick="filterTasks('done',this)">Ολοκλ.</button>
+    <button class="filt" onclick="filterTasks('perisilogi',this)">Περισυλλογή</button>
+    <button class="filt" onclick="filterTasks('dianomi',this)">Διανομή</button>
+    <button class="filt" onclick="filterTasks('metafora',this)">Μεταφορά</button>
+  </div>
+  <div class="task-list" id="tasks-list"><div class="empty-state">Δεν υπάρχουν εργασίες</div></div>
+</div>
+<div class="page" id="page-offers">
+  <div class="filters">
+    <button class="filt active" onclick="filterOffers('all',this)">Όλες</button>
+    <button class="filt" onclick="filterOffers('waiting',this)">Αναμονή</button>
+    <button class="filt" onclick="filterOffers('confirmed',this)">Επιβεβ.</button>
+    <button class="filt" onclick="filterOffers('cancelled',this)">Ακυρωμ.</button>
+  </div>
+  <div id="offers-list"><div class="empty-state">Δεν υπάρχουν προσφορές</div></div>
+</div>
+<div class="page" id="page-calendar">
+  <div class="cal-nav">
+    <button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
+    <h3 id="cal-month-title"></h3>
+    <button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
+  </div>
+  <div class="cal-grid" id="cal-grid"></div>
+  <div style="margin-top:16px" id="cal-day-detail"></div>
+</div>
+<div class="page" id="page-todo">
+  <div class="filters">
+    <button class="filt active" onclick="filterTodos('all',this)">Όλα</button>
+    <button class="filt" onclick="filterTodos('pending',this)">Εκκρεμή</button>
+    <button class="filt" onclick="filterTodos('urgent',this)">🔴 Επείγον</button>
+    <button class="filt" onclick="filterTodos('done',this)">Ολοκλ.</button>
+  </div>
+  <div id="todo-list"><div class="empty-state">Δεν υπάρχουν εργασίες</div></div>
+</div>
+<div class="bottom-tabs">
+  <button class="btab active" onclick="switchTab('today',this)"><span class="icon">🏠</span>Σήμερα</button>
+  <button class="btab" onclick="switchTab('tasks',this)"><span class="icon">📋</span>Εργασίες</button>
+  <button class="btab" onclick="switchTab('offers',this)"><span class="icon">💰</span>Προσφορές</button>
+  <button class="btab" onclick="switchTab('calendar',this)"><span class="icon">📅</span>Ημερολόγιο</button>
+  <button class="btab" onclick="switchTab('todo',this)"><span class="icon">✅</span>To Do</button>
+</div>
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchModalTab('task',this)">📋 Εργασία</button>
+      <button class="modal-tab" onclick="switchModalTab('offer',this)">💰 Προσφορά</button>
+      <button class="modal-tab" onclick="switchModalTab('todo',this)">✅ To Do</button>
+    </div>
+    <div id="mform-task">
+      <input type="hidden" id="f-task-id">
+      <div class="fg-row">
+        <div class="fg"><label>Τύπος</label><select id="f-type"><option value="perisilogi">Περισυλλογή</option><option value="dianomi">Διανομή</option><option value="metafora">Μεταφορά</option><option value="metakomisi">Μετακόμιση</option></select></div>
+        <div class="fg"><label>Ώρα</label><input type="time" id="f-time"></div>
+      </div>
+      <div class="fg-row">
+        <div class="fg"><label>Πελάτης</label><input type="text" id="f-client" placeholder="Όνομα"></div>
+        <div class="fg"><label>📱 Τηλέφωνο</label><input type="tel" id="f-tel" placeholder="69xxxxxxxx"></div>
+      </div>
+      <div class="fg"><label>Ημερομηνία</label><input type="date" id="f-date"></div>
+      <div class="fg"><label>Από</label><input type="text" id="f-from" placeholder="Διεύθυνση παραλαβής"></div>
+      <div class="fg"><label>Προς</label><input type="text" id="f-to" placeholder="Διεύθυνση παράδοσης"></div>
+      <div class="fg"><label>Σημείωση</label><textarea id="f-note" rows="2" placeholder="Προαιρετικά..."></textarea></div>
+    </div>
+    <div id="mform-offer" style="display:none">
+      <input type="hidden" id="f-offer-id">
+      <div class="fg-row">
+        <div class="fg"><label>Πελάτης</label><input type="text" id="fo-client" placeholder="Όνομα"></div>
+        <div class="fg"><label>📱 Τηλέφωνο</label><input type="tel" id="fo-tel" placeholder="69xxxxxxxx"></div>
+      </div>
+      <div class="fg"><label>Περιγραφή μεταφοράς</label><input type="text" id="fo-desc" placeholder="Τι ζήτησε..."></div>
+      <div class="fg-row">
+        <div class="fg"><label>Τιμή που είπα €</label><input type="number" id="fo-price" placeholder="0"></div>
+        <div class="fg"><label>Ημερομηνία επικ.</label><input type="date" id="fo-date"></div>
+      </div>
+      <div class="fg"><label>Σημείωση</label><textarea id="fo-note" rows="2" placeholder="Προαιρετικά..."></textarea></div>
+    </div>
+    <div id="mform-todo" style="display:none">
+      <input type="hidden" id="f-todo-id">
+      <div class="fg"><label>Εργασία</label><input type="text" id="ft-title" placeholder="Τι πρέπει να κάνω..."></div>
+      <div class="fg-row">
+        <div class="fg"><label>Ημερομηνία</label><input type="date" id="ft-date"></div>
+        <div class="fg"><label>Προτεραιότητα</label><select id="ft-prio"><option value="normal">Κανονική</option><option value="urgent">🔴 Επείγον</option></select></div>
+      </div>
+      <div class="fg"><label>Σημείωση</label><textarea id="ft-note" rows="2" placeholder="Προαιρετικά..."></textarea></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Ακύρωση</button>
+      <button class="btn-save" onclick="saveEntry()">Αποθήκευση</button>
+    </div>
+  </div>
+</div>
+<script>
+let tasks=JSON.parse(localStorage.getItem('salv_tasks')||'[]');
+let offers=JSON.parse(localStorage.getItem('salv_offers')||'[]');
+let todos=JSON.parse(localStorage.getItem('salv_todos')||'[]');
+let currentModalTab='task';
+let calYear=new Date().getFullYear();
+let calMonth=new Date().getMonth();
+let taskFilter='all';
+let offerFilter='all';
+let todoFilter='all';
+const todayStr=()=>new Date().toISOString().split('T')[0];
+const fmtShort=d=>{if(!d)return'';const[,m,dd]=d.split('-');return`${dd}/${m}`;};
+const MONTHS_GR=['Ιανουάριος','Φεβρουάριος','Μάρτιος','Απρίλιος','Μάιος','Ιούνιος','Ιούλιος','Αύγουστος','Σεπτέμβριος','Οκτώβριος','Νοέμβριος','Δεκέμβριος'];
+const TYPE_LABELS={perisilogi:'Περισυλλογή',dianomi:'Διανομή',metafora:'Μεταφορά',metakomisi:'Μετακόμιση'};
+const TYPE_CLS={perisilogi:'type-perisilogi',dianomi:'type-dianomi',metafora:'type-metafora',metakomisi:'type-metakomisi'};
+const TYPE_COLORS={perisilogi:'#5b8dee',dianomi:'#e8c97a',metafora:'#3ec97a',metakomisi:'#a78bfa'};
+function switchTab(t,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.btab').forEach(b=>b.classList.remove('active'));document.getElementById('page-'+t).classList.add('active');el.classList.add('active');if(t==='calendar')renderCalendar();}
+function renderToday(){const today=todayStr();const now=new Date();document.getElementById('today-date').textContent=now.toLocaleDateString('el-GR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});const todayTasks=tasks.filter(t=>t.date===today).sort((a,b)=>(a.time||'').localeCompare(b.time||''));const pending=todayTasks.filter(t=>!t.done).length;const done=todayTasks.filter(t=>t.done).length;document.getElementById('ts-total').textContent=todayTasks.length;document.getElementById('ts-pending').textContent=pending;document.getElementById('ts-done').textContent=done;const list=document.getElementById('today-list');if(!todayTasks.length){list.innerHTML='<div class="empty-state">Δεν υπάρχουν εργασίες σήμερα 🎉</div>';return;}list.innerHTML=todayTasks.map(t=>taskCardHTML(t)).join('');}
+function renderTasks(){let filtered=tasks.slice().sort((a,b)=>b.id-a.id);if(taskFilter==='pending')filtered=filtered.filter(t=>!t.done);else if(taskFilter==='done')filtered=filtered.filter(t=>t.done);else if(['perisilogi','dianomi','metafora','metakomisi'].includes(taskFilter))filtered=filtered.filter(t=>t.type===taskFilter);const list=document.getElementById('tasks-list');if(!filtered.length){list.innerHTML='<div class="empty-state">Δεν υπάρχουν εργασίες</div>';return;}list.innerHTML=filtered.map(t=>taskCardHTML(t)).join('');}
+function filterTasks(f,el){taskFilter=f;document.querySelectorAll('#page-tasks .filt').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderTasks();}
+function taskCardHTML(t){return`<div class="task-card${t.done?' done':''}" id="tc-${t.id}"><div class="tc-top"><button class="tc-check${t.done?' checked':''}" onclick="toggleTask(${t.id})">${t.done?'✓':''}</button><span class="tc-title">${t.client||'—'}</span><span class="tc-type ${TYPE_CLS[t.type]}">${TYPE_LABELS[t.type]}</span><div class="tc-actions"><button class="act-btn" onclick="editTask(${t.id})">✏️</button><button class="act-btn" onclick="delTask(${t.id})">✕</button></div></div><div class="tc-mid">${t.tel?`<a class="tc-phone" href="tel:${t.tel}">📱 ${t.tel}</a>`:''}${t.time?`<span class="tc-time">🕐 ${t.time}</span>`:''}${t.date?`<span style="font-size:10px;color:var(--muted)">${fmtShort(t.date)}</span>`:''}</div><div class="tc-bot">${t.from?`<div class="tc-route">📍 Από: <span>${t.from}</span></div>`:''}${t.to?`<div class="tc-route">🏁 Προς: <span>${t.to}</span></div>`:''}${t.note?`<div class="tc-note">📝 ${t.note}</div>`:''}</div></div>`;}
+function toggleTask(id){const t=tasks.find(t=>t.id===id);if(t){t.done=!t.done;persist();renderAll();}}
+function delTask(id){if(!confirm('Διαγραφή;'))return;tasks=tasks.filter(t=>t.id!==id);persist();renderAll();}
+function editTask(id){const t=tasks.find(t=>t.id===id);if(!t)return;openNewModal('task');document.getElementById('f-task-id').value=id;document.getElementById('f-type').value=t.type;document.getElementById('f-time').value=t.time||'';document.getElementById('f-client').value=t.client||'';document.getElementById('f-tel').value=t.tel||'';document.getElementById('f-date').value=t.date||'';document.getElementById('f-from').value=t.from||'';document.getElementById('f-to').value=t.to||'';document.getElementById('f-note').value=t.note||'';}
+function renderOffers(){let filtered=offers.slice().sort((a,b)=>b.id-a.id);if(offerFilter==='waiting')filtered=filtered.filter(o=>o.status==='waiting');else if(offerFilter==='confirmed')filtered=filtered.filter(o=>o.status==='confirmed');else if(offerFilter==='cancelled')filtered=filtered.filter(o=>o.status==='cancelled');const list=document.getElementById('offers-list');if(!filtered.length){list.innerHTML='<div class="empty-state">Δεν υπάρχουν προσφορές</div>';return;}list.innerHTML=filtered.map(o=>`<div class="offer-card${o.status==='confirmed'?' confirmed':o.status==='cancelled'?' cancelled':''}"><div class="oc-top"><span class="oc-name">${o.client||'—'}</span>${o.price?`<span class="oc-price">€${o.price}</span>`:''}</div><div class="oc-mid">${o.tel?`<a class="tc-phone" href="tel:${o.tel}">📱 ${o.tel}</a>`:''}${o.date?`<span class="oc-date">📅 ${fmtShort(o.date)}</span>`:''}</div>${o.desc?`<div style="font-size:11px;color:var(--text);margin-top:5px">🚛 ${o.desc}</div>`:''}${o.note?`<div class="tc-note" style="margin-top:4px">📝 ${o.note}</div>`:''}<div class="oc-bot"><button class="oc-status-btn osb-wait" onclick="setOfferStatus(${o.id},'waiting')">⏳ Αναμονή</button><button class="oc-status-btn osb-confirm" onclick="setOfferStatus(${o.id},'confirmed')">✅ Επιβεβ.</button><button class="oc-status-btn osb-cancel" onclick="setOfferStatus(${o.id},'cancelled')">❌ Ακύρωση</button><button class="act-btn" onclick="editOffer(${o.id})">✏️</button><button class="act-btn" onclick="delOffer(${o.id})">✕</button></div></div>`).join('');}
+function filterOffers(f,el){offerFilter=f;document.querySelectorAll('#page-offers .filt').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderOffers();}
+function setOfferStatus(id,status){const o=offers.find(o=>o.id===id);if(o){o.status=status;persist();renderOffers();}}
+function delOffer(id){if(!confirm('Διαγραφή;'))return;offers=offers.filter(o=>o.id!==id);persist();renderOffers();}
+function editOffer(id){const o=offers.find(o=>o.id===id);if(!o)return;openNewModal('offer');document.getElementById('f-offer-id').value=id;document.getElementById('fo-client').value=o.client||'';document.getElementById('fo-tel').value=o.tel||'';document.getElementById('fo-desc').value=o.desc||'';document.getElementById('fo-price').value=o.price||'';document.getElementById('fo-date').value=o.date||'';document.getElementById('fo-note').value=o.note||'';}
+function renderCalendar(){document.getElementById('cal-month-title').textContent=MONTHS_GR[calMonth]+' '+calYear;const grid=document.getElementById('cal-grid');const firstDay=new Date(calYear,calMonth,1).getDay();const daysInMonth=new Date(calYear,calMonth+1,0).getDate();const today=todayStr();let html='';['Κυρ','Δευ','Τρι','Τετ','Πεμ','Παρ','Σαβ'].forEach((d,i)=>html+=`<div class="cal-day-hdr${i===0||i===6?' wknd':''}">${d}</div>`);for(let i=0;i<firstDay;i++)html+=`<div class="cal-day empty"></div>`;for(let d=1;d<=daysInMonth;d++){const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const dayTasks=tasks.filter(t=>t.date===ds);const isToday=ds===today;html+=`<div class="cal-day${isToday?' today':''}${dayTasks.length?' has-tasks':''}" onclick="showDayDetail('${ds}')"><div class="cal-day-num">${d}</div><div class="cal-day-dots">${dayTasks.slice(0,3).map(t=>`<div class="cal-dot" style="background:${TYPE_COLORS[t.type]}"></div>`).join('')}</div></div>`;}grid.innerHTML=html;document.getElementById('cal-day-detail').innerHTML='';}
+function changeMonth(dir){calMonth+=dir;if(calMonth>11){calMonth=0;calYear++;}else if(calMonth<0){calMonth=11;calYear--;}renderCalendar();}
+function showDayDetail(ds){const dayTasks=tasks.filter(t=>t.date===ds).sort((a,b)=>(a.time||'').localeCompare(b.time||''));const el=document.getElementById('cal-day-detail');if(!dayTasks.length){el.innerHTML=`<div class="empty-state" style="padding:10px 0">Καμία εργασία για ${fmtShort(ds)}</div>`;return;}el.innerHTML=`<div style="font-family:'Playfair Display',serif;font-size:14px;margin-bottom:10px;color:var(--accent)">📅 ${fmtShort(ds)}</div>`+dayTasks.map(t=>taskCardHTML(t)).join('');}
+function renderTodos(){let filtered=todos.slice().sort((a,b)=>{if(a.done!==b.done)return a.done?1:-1;if(a.prio==='urgent'&&b.prio!=='urgent')return -1;if(b.prio==='urgent'&&a.prio!=='urgent')return 1;return(a.date||'').localeCompare(b.date||'');});if(todoFilter==='pending')filtered=filtered.filter(t=>!t.done);else if(todoFilter==='urgent')filtered=filtered.filter(t=>t.prio==='urgent'&&!t.done);else if(todoFilter==='done')filtered=filtered.filter(t=>t.done);const list=document.getElementById('todo-list');if(!filtered.length){list.innerHTML='<div class="empty-state">Δεν υπάρχουν εργασίες</div>';return;}list.innerHTML=filtered.map(t=>`<div class="todo-card${t.done?' done':''}${t.prio==='urgent'?' urgent':''}"><div class="todo-top"><button class="tc-check${t.done?' checked':''}" onclick="toggleTodo(${t.id})">${t.done?'✓':''}</button><span class="todo-title">${t.title}</span>${t.prio==='urgent'?'<span class="prio-badge prio-urgent">Επείγον</span>':''}<div class="tc-actions" style="margin-left:auto"><button class="act-btn" onclick="editTodo(${t.id})">✏️</button><button class="act-btn" onclick="delTodo(${t.id})">✕</button></div></div>${t.date?`<div style="font-size:10px;color:var(--muted);margin-top:4px;margin-left:28px">📅 ${fmtShort(t.date)}</div>`:''}${t.note?`<div class="tc-note" style="margin-left:28px">📝 ${t.note}</div>`:''}</div>`).join('');}
+function filterTodos(f,el){todoFilter=f;document.querySelectorAll('#page-todo .filt').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderTodos();}
+function toggleTodo(id){const t=todos.find(t=>t.id===id);if(t){t.done=!t.done;persist();renderTodos();}}
+function delTodo(id){if(!confirm('Διαγραφή;'))return;todos=todos.filter(t=>t.id!==id);persist();renderTodos();}
+function editTodo(id){const t=todos.find(t=>t.id===id);if(!t)return;openNewModal('todo');document.getElementById('f-todo-id').value=id;document.getElementById('ft-title').value=t.title||'';document.getElementById('ft-date').value=t.date||'';document.getElementById('ft-prio').value=t.prio||'normal';document.getElementById('ft-note').value=t.note||'';}
+function openNewModal(tab){tab=tab||'task';currentModalTab=tab;document.querySelectorAll('.modal-tab').forEach((el,i)=>el.classList.toggle('active',['task','offer','todo'][i]===tab));document.getElementById('mform-task').style.display=tab==='task'?'block':'none';document.getElementById('mform-offer').style.display=tab==='offer'?'block':'none';document.getElementById('mform-todo').style.display=tab==='todo'?'block':'none';document.getElementById('f-task-id').value='';document.getElementById('f-offer-id').value='';document.getElementById('f-todo-id').value='';document.getElementById('f-date').value=todayStr();document.getElementById('fo-date').value=todayStr();document.getElementById('ft-date').value=todayStr();document.getElementById('modal').classList.add('open');}
+function switchModalTab(tab,el){currentModalTab=tab;document.querySelectorAll('.modal-tab').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.getElementById('mform-task').style.display=tab==='task'?'block':'none';document.getElementById('mform-offer').style.display=tab==='offer'?'block':'none';document.getElementById('mform-todo').style.display=tab==='todo'?'block':'none';}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal();});
+function saveEntry(){if(currentModalTab==='task'){const client=document.getElementById('f-client').value.trim();if(!client){alert('Συμπλήρωσε τουλάχιστον τον πελάτη!');return;}const editId=document.getElementById('f-task-id').value;const data={type:document.getElementById('f-type').value,client,tel:document.getElementById('f-tel').value.trim(),time:document.getElementById('f-time').value,date:document.getElementById('f-date').value,from:document.getElementById('f-from').value.trim(),to:document.getElementById('f-to').value.trim(),note:document.getElementById('f-note').value.trim(),done:false};if(editId){const idx=tasks.findIndex(t=>t.id===Number(editId));if(idx>-1)tasks[idx]={...tasks[idx],...data,done:tasks[idx].done};}else tasks.push({id:Date.now(),...data});}else if(currentModalTab==='offer'){const client=document.getElementById('fo-client').value.trim();if(!client){alert('Συμπλήρωσε τουλάχιστον τον πελάτη!');return;}const editId=document.getElementById('f-offer-id').value;const data={client,tel:document.getElementById('fo-tel').value.trim(),desc:document.getElementById('fo-desc').value.trim(),price:document.getElementById('fo-price').value,date:document.getElementById('fo-date').value,note:document.getElementById('fo-note').value.trim(),status:'waiting'};if(editId){const idx=offers.findIndex(o=>o.id===Number(editId));if(idx>-1)offers[idx]={...offers[idx],...data,status:offers[idx].status};}else offers.push({id:Date.now(),...data});}else if(currentModalTab==='todo'){const title=document.getElementById('ft-title').value.trim();if(!title){alert('Γράψε τι πρέπει να κάνεις!');return;}const editId=document.getElementById('f-todo-id').value;const data={title,date:document.getElementById('ft-date').value,prio:document.getElementById('ft-prio').value,note:document.getElementById('ft-note').value.trim(),done:false};if(editId){const idx=todos.findIndex(t=>t.id===Number(editId));if(idx>-1)todos[idx]={...todos[idx],...data,done:todos[idx].done};}else todos.push({id:Date.now(),...data});}closeModal();persist();renderAll();}
+function persist(){localStorage.setItem('salv_tasks',JSON.stringify(tasks));localStorage.setItem('salv_offers',JSON.stringify(offers));localStorage.setItem('salv_todos',JSON.stringify(todos));}
+function renderAll(){renderToday();renderTasks();renderOffers();renderTodos();}
+renderAll();
+</script>
+</body>
+</html>
