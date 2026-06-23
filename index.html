@@ -643,13 +643,29 @@ function renderClips(){
 }
 
 function playClip(id){
-  // pause all others
-  clips.forEach(c=>{ const a=document.getElementById('audio-'+c.id); if(a) a.pause(); });
-  const audio=document.getElementById('audio-'+id);
-  const btn=document.querySelector(`#clip-${id} .clip-play`);
-  if(audio.paused){ audio.play(); if(btn) btn.textContent='⏸'; audio.onended=()=>{ if(btn) btn.textContent='▶'; }; }
-  else{ audio.pause(); if(btn) btn.textContent='▶'; }
+  document.querySelectorAll('audio').forEach(a=>{ a.pause(); a.currentTime=0; });
+  document.querySelectorAll('.clip-play').forEach(b=>b.textContent='▶');
+  const clip = clips.find(c=>c.id===id);
+  if(!clip) return;
+  const btn = document.querySelector(`#clip-${id} .clip-play`);
+  try {
+    const arr = clip.dataUrl.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while(n--) u8arr[n] = bstr.charCodeAt(n);
+    const blob = new Blob([u8arr], {type: mime});
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    audio.play().then(()=>{
+      if(btn) btn.textContent='⏸';
+      audio.onended = ()=>{ if(btn) btn.textContent='▶'; URL.revokeObjectURL(url); };
+      if(btn) btn.onclick = ()=>{ audio.pause(); btn.textContent='▶'; btn.onclick=()=>playClip(id); };
+    }).catch(()=>{ alert('Δεν μπόρεσε να παίξει.'); URL.revokeObjectURL(url); });
+  } catch(e) { alert('Σφάλμα αναπαραγωγής.'); }
 }
+
 
 function delClip(id){
   if(!confirm('Διαγραφή ηχητικής σημείωσης;')) return;
