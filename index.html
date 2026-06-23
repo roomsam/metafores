@@ -584,7 +584,8 @@ mediaRecorder = mimeType ? new MediaRecorder(stream, {mimeType}) : new MediaReco
     audioChunks = [];
     mediaRecorder.ondataavailable = e => { if(e.data.size>0) audioChunks.push(e.data); };
     mediaRecorder.onstop = () => {
-      const blob = new Blob(audioChunks, {type:'audio/webm'});
+      const blob = new Blob(audioChunks, {type: mediaRecorder.mimeType || 'audio/mp4'}
+
       const reader = new FileReader();
       reader.onloadend = () => {
         const now = new Date();
