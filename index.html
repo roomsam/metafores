@@ -11,7 +11,10 @@
 body{background:var(--bg);color:var(--text);font-family:'Karla',sans-serif;font-size:14px;min-height:100vh;padding-bottom:70px}
 .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
 .topbar h1{font-family:'Playfair Display',serif;font-size:18px;color:var(--accent)}
+.topbar-right{display:flex;gap:8px;align-items:center}
 .btn-new{background:var(--accent);color:#0e1117;border:none;padding:7px 16px;border-radius:7px;font-family:'Karla',sans-serif;font-weight:700;font-size:12px;cursor:pointer}
+.btn-notif{background:var(--surface2);border:1px solid var(--border);color:var(--muted);padding:7px 10px;border-radius:7px;font-size:14px;cursor:pointer;transition:all .2s}
+.btn-notif.active{color:var(--accent);border-color:var(--accent)}
 .bottom-tabs{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:50}
 .btab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;cursor:pointer;font-size:9px;color:var(--muted);font-weight:600;letter-spacing:.3px;transition:color .2s;gap:3px;border:none;background:none}
 .btab .icon{font-size:18px}
@@ -47,9 +50,11 @@ body{background:var(--bg);color:var(--text);font-family:'Karla',sans-serif;font-
 .tc-note{font-size:10px;color:var(--muted);font-style:italic;margin-top:2px}
 .tc-actions{display:flex;gap:3px;margin-left:auto}
 .act-btn{background:none;border:none;cursor:pointer;font-size:13px;padding:2px 4px;border-radius:4px}
-.filters{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.filters{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
 .filt{background:var(--surface2);border:1px solid var(--border);color:var(--muted);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Karla',sans-serif}
 .filt.active{background:var(--accent);color:#0e1117;border-color:var(--accent)}
+.btn-del-all{background:rgba(232,86,74,.1);border:1px solid rgba(232,86,74,.3);color:var(--red);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Karla',sans-serif;margin-left:auto;display:none}
+.btn-del-all.visible{display:block}
 .offer-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px;margin-bottom:8px}
 .offer-card.confirmed{border-color:rgba(62,201,122,.3)}
 .offer-card.cancelled{opacity:.35}
@@ -86,6 +91,39 @@ body{background:var(--bg);color:var(--text);font-family:'Karla',sans-serif;font-
 .prio-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600}
 .prio-urgent{background:rgba(232,86,74,.12);color:var(--red)}
 .empty-state{color:var(--muted);font-style:italic;font-size:12px;padding:20px 0;text-align:center}
+
+/* VOICE MEMO STYLES */
+.voice-section{margin-bottom:20px}
+.voice-section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.voice-section-hdr h2{font-family:'Playfair Display',serif;font-size:16px;color:var(--text)}
+.voice-recorder{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.voice-controls{display:flex;align-items:center;gap:10px}
+.btn-record{width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;transition:all .2s;flex-shrink:0}
+.btn-record.idle{background:rgba(232,86,74,.15);color:var(--red)}
+.btn-record.recording{background:var(--red);color:#fff;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(232,86,74,.4)}50%{transform:scale(1.05);box-shadow:0 0 0 8px rgba(232,86,74,0)}}
+.voice-status{font-size:12px;color:var(--muted);flex:1}
+.voice-status.recording{color:var(--red);font-weight:600}
+.voice-timer{font-size:11px;color:var(--accent);font-weight:700;min-width:36px;text-align:right}
+.voice-clips{display:flex;flex-direction:column;gap:6px}
+.voice-clip{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;display:flex;align-items:center;gap:8px}
+.clip-play{background:none;border:none;color:var(--accent);font-size:16px;cursor:pointer;flex-shrink:0;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(232,201,122,.1)}
+.clip-info{flex:1;min-width:0}
+.clip-label{font-size:11px;font-weight:600;color:var(--text)}
+.clip-time{font-size:10px;color:var(--muted)}
+.clip-del{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:2px 4px}
+audio{display:none}
+
+/* NOTIFICATION BANNER */
+.notif-banner{background:rgba(91,141,238,.08);border:1px solid rgba(91,141,238,.2);border-radius:10px;padding:12px 14px;margin-bottom:14px;display:none}
+.notif-banner.visible{display:block}
+.notif-banner-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.notif-banner-title{font-size:12px;font-weight:700;color:var(--blue)}
+.notif-banner-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px}
+.notif-item{font-size:11px;color:var(--text);padding:3px 0;display:flex;align-items:flex-start;gap:6px}
+.notif-item::before{content:'•';color:var(--blue);flex-shrink:0}
+
+/* MODALS */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);z-index:200;align-items:flex-start;justify-content:center;padding:14px;overflow-y:auto}
 .modal-overlay.open{display:flex}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;width:100%;max-width:440px;box-shadow:0 24px 80px rgba(0,0,0,.5);animation:mup .2s ease;margin:auto}
@@ -103,23 +141,62 @@ body{background:var(--bg);color:var(--text);font-family:'Karla',sans-serif;font-
 .modal-tab{flex:1;padding:7px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;text-align:center;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;font-family:'Karla',sans-serif}
 .modal-tab.active{background:var(--accent);color:#0e1117;border-color:var(--accent)}
 select option{background:#1a2030}
+
+/* TOAST */
+.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 18px;font-size:12px;font-weight:600;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
 </style>
 </head>
 <body>
 <div class="topbar">
   <h1>🚛 Salvanos Μεταφορές</h1>
-  <button class="btn-new" onclick="openNewModal()">+ Νέο</button>
+  <div class="topbar-right">
+    <button class="btn-notif" id="btn-notif" onclick="toggleNotifications()" title="Ειδοποιήσεις 08:00">🔔</button>
+    <button class="btn-new" onclick="openNewModal()">+ Νέο</button>
+  </div>
 </div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ΣΗΜΕΡΑ -->
 <div class="page active" id="page-today">
   <div class="today-date" id="today-date"></div>
+
+  <!-- Notification banner -->
+  <div class="notif-banner" id="notif-banner">
+    <div class="notif-banner-hdr">
+      <span class="notif-banner-title">🔔 Υποχρεώσεις Ημέρας</span>
+      <button class="notif-banner-close" onclick="closeBanner()">✕</button>
+    </div>
+    <div id="notif-items"></div>
+  </div>
+
   <div class="today-stats">
     <div class="tstat"><div class="tsl">Εργασίες</div><div class="tsv blue" id="ts-total">0</div></div>
     <div class="tstat"><div class="tsl">Εκκρεμείς</div><div class="tsv orange" id="ts-pending">0</div></div>
     <div class="tstat"><div class="tsl">Ολοκλ.</div><div class="tsv green" id="ts-done">0</div></div>
   </div>
+
+  <!-- VOICE MEMO SECTION -->
+  <div class="voice-section">
+    <div class="voice-section-hdr">
+      <h2>🎙️ Φωνητικές Σημειώσεις</h2>
+    </div>
+    <div class="voice-recorder">
+      <div class="voice-controls">
+        <button class="btn-record idle" id="btn-record" onclick="toggleRecording()">🎙️</button>
+        <span class="voice-status" id="voice-status">Πάτα για εγγραφή</span>
+        <span class="voice-timer" id="voice-timer"></span>
+      </div>
+      <div class="voice-clips" id="voice-clips"></div>
+    </div>
+  </div>
+
   <div class="sec-hdr"><h2>📋 Σήμερα</h2></div>
   <div class="task-list" id="today-list"><div class="empty-state">Δεν υπάρχουν εργασίες σήμερα</div></div>
 </div>
+
+<!-- ΕΡΓΑΣΙΕΣ -->
 <div class="page" id="page-tasks">
   <div class="filters">
     <button class="filt active" onclick="filterTasks('all',this)">Όλες</button>
@@ -131,6 +208,8 @@ select option{background:#1a2030}
   </div>
   <div class="task-list" id="tasks-list"><div class="empty-state">Δεν υπάρχουν εργασίες</div></div>
 </div>
+
+<!-- ΠΡΟΣΦΟΡΕΣ -->
 <div class="page" id="page-offers">
   <div class="filters">
     <button class="filt active" onclick="filterOffers('all',this)">Όλες</button>
@@ -140,6 +219,8 @@ select option{background:#1a2030}
   </div>
   <div id="offers-list"><div class="empty-state">Δεν υπάρχουν προσφορές</div></div>
 </div>
+
+<!-- ΗΜΕΡΟΛΟΓΙΟ -->
 <div class="page" id="page-calendar">
   <div class="cal-nav">
     <button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
@@ -149,15 +230,20 @@ select option{background:#1a2030}
   <div class="cal-grid" id="cal-grid"></div>
   <div style="margin-top:16px" id="cal-day-detail"></div>
 </div>
+
+<!-- TO DO -->
 <div class="page" id="page-todo">
   <div class="filters">
     <button class="filt active" onclick="filterTodos('all',this)">Όλα</button>
     <button class="filt" onclick="filterTodos('pending',this)">Εκκρεμή</button>
     <button class="filt" onclick="filterTodos('urgent',this)">🔴 Επείγον</button>
     <button class="filt" onclick="filterTodos('done',this)">Ολοκλ.</button>
+    <button class="btn-del-all" id="btn-del-all" onclick="deleteAllDoneTodos()">🗑️ Διαγραφή Όλων</button>
   </div>
   <div id="todo-list"><div class="empty-state">Δεν υπάρχουν εργασίες</div></div>
 </div>
+
+<!-- BOTTOM TABS -->
 <div class="bottom-tabs">
   <button class="btab active" onclick="switchTab('today',this)"><span class="icon">🏠</span>Σήμερα</button>
   <button class="btab" onclick="switchTab('tasks',this)"><span class="icon">📋</span>Εργασίες</button>
@@ -165,6 +251,8 @@ select option{background:#1a2030}
   <button class="btab" onclick="switchTab('calendar',this)"><span class="icon">📅</span>Ημερολόγιο</button>
   <button class="btab" onclick="switchTab('todo',this)"><span class="icon">✅</span>To Do</button>
 </div>
+
+<!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <div class="modal-tabs">
@@ -215,51 +303,458 @@ select option{background:#1a2030}
     </div>
   </div>
 </div>
+
 <script>
-let tasks=JSON.parse(localStorage.getItem('salv_tasks')||'[]');
-let offers=JSON.parse(localStorage.getItem('salv_offers')||'[]');
-let todos=JSON.parse(localStorage.getItem('salv_todos')||'[]');
-let currentModalTab='task';
-let calYear=new Date().getFullYear();
-let calMonth=new Date().getMonth();
-let taskFilter='all';
-let offerFilter='all';
-let todoFilter='all';
-const todayStr=()=>new Date().toISOString().split('T')[0];
-const fmtShort=d=>{if(!d)return'';const[,m,dd]=d.split('-');return`${dd}/${m}`;};
-const MONTHS_GR=['Ιανουάριος','Φεβρουάριος','Μάρτιος','Απρίλιος','Μάιος','Ιούνιος','Ιούλιος','Αύγουστος','Σεπτέμβριος','Οκτώβριος','Νοέμβριος','Δεκέμβριος'];
-const TYPE_LABELS={perisilogi:'Περισυλλογή',dianomi:'Διανομή',metafora:'Μεταφορά',metakomisi:'Μετακόμιση'};
-const TYPE_CLS={perisilogi:'type-perisilogi',dianomi:'type-dianomi',metafora:'type-metafora',metakomisi:'type-metakomisi'};
-const TYPE_COLORS={perisilogi:'#5b8dee',dianomi:'#e8c97a',metafora:'#3ec97a',metakomisi:'#a78bfa'};
-function switchTab(t,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.btab').forEach(b=>b.classList.remove('active'));document.getElementById('page-'+t).classList.add('active');el.classList.add('active');if(t==='calendar')renderCalendar();}
-function renderToday(){const today=todayStr();const now=new Date();document.getElementById('today-date').textContent=now.toLocaleDateString('el-GR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});const todayTasks=tasks.filter(t=>t.date===today).sort((a,b)=>(a.time||'').localeCompare(b.time||''));const pending=todayTasks.filter(t=>!t.done).length;const done=todayTasks.filter(t=>t.done).length;document.getElementById('ts-total').textContent=todayTasks.length;document.getElementById('ts-pending').textContent=pending;document.getElementById('ts-done').textContent=done;const list=document.getElementById('today-list');if(!todayTasks.length){list.innerHTML='<div class="empty-state">Δεν υπάρχουν εργασίες σήμερα 🎉</div>';return;}list.innerHTML=todayTasks.map(t=>taskCardHTML(t)).join('');}
-function renderTasks(){let filtered=tasks.slice().sort((a,b)=>b.id-a.id);if(taskFilter==='pending')filtered=filtered.filter(t=>!t.done);else if(taskFilter==='done')filtered=filtered.filter(t=>t.done);else if(['perisilogi','dianomi','metafora','metakomisi'].includes(taskFilter))filtered=filtered.filter(t=>t.type===taskFilter);const list=document.getElementById('tasks-list');if(!filtered.length){list.innerHTML='<div class="empty-state">Δεν υπάρχουν εργασίες</div>';return;}list.innerHTML=filtered.map(t=>taskCardHTML(t)).join('');}
-function filterTasks(f,el){taskFilter=f;document.querySelectorAll('#page-tasks .filt').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderTasks();}
-function taskCardHTML(t){return`<div class="task-card${t.done?' done':''}" id="tc-${t.id}"><div class="tc-top"><button class="tc-check${t.done?' checked':''}" onclick="toggleTask(${t.id})">${t.done?'✓':''}</button><span class="tc-title">${t.client||'—'}</span><span class="tc-type ${TYPE_CLS[t.type]}">${TYPE_LABELS[t.type]}</span><div class="tc-actions"><button class="act-btn" onclick="editTask(${t.id})">✏️</button><button class="act-btn" onclick="delTask(${t.id})">✕</button></div></div><div class="tc-mid">${t.tel?`<a class="tc-phone" href="tel:${t.tel}">📱 ${t.tel}</a>`:''}${t.time?`<span class="tc-time">🕐 ${t.time}</span>`:''}${t.date?`<span style="font-size:10px;color:var(--muted)">${fmtShort(t.date)}</span>`:''}</div><div class="tc-bot">${t.from?`<div class="tc-route">📍 Από: <span>${t.from}</span></div>`:''}${t.to?`<div class="tc-route">🏁 Προς: <span>${t.to}</span></div>`:''}${t.note?`<div class="tc-note">📝 ${t.note}</div>`:''}</div></div>`;}
+// ── DATA ──────────────────────────────────────────────────
+let tasks  = JSON.parse(localStorage.getItem('salv_tasks')  || '[]');
+let offers = JSON.parse(localStorage.getItem('salv_offers') || '[]');
+let todos  = JSON.parse(localStorage.getItem('salv_todos')  || '[]');
+let clips  = JSON.parse(localStorage.getItem('salv_clips')  || '[]'); // {id, label, ts, dataUrl}
+
+let currentModalTab = 'task';
+let calYear  = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+let taskFilter  = 'all';
+let offerFilter = 'all';
+let todoFilter  = 'all';
+
+const todayStr = () => new Date().toISOString().split('T')[0];
+const fmtShort = d => { if(!d) return ''; const[,m,dd]=d.split('-'); return `${dd}/${m}`; };
+const MONTHS_GR = ['Ιανουάριος','Φεβρουάριος','Μάρτιος','Απρίλιος','Μάιος','Ιούνιος','Ιούλιος','Αύγουστος','Σεπτέμβριος','Οκτώβριος','Νοέμβριος','Δεκέμβριος'];
+const TYPE_LABELS  = {perisilogi:'Περισυλλογή',dianomi:'Διανομή',metafora:'Μεταφορά',metakomisi:'Μετακόμιση'};
+const TYPE_CLS     = {perisilogi:'type-perisilogi',dianomi:'type-dianomi',metafora:'type-metafora',metakomisi:'type-metakomisi'};
+const TYPE_COLORS  = {perisilogi:'#5b8dee',dianomi:'#e8c97a',metafora:'#3ec97a',metakomisi:'#a78bfa'};
+
+// ── TABS ─────────────────────────────────────────────────
+function switchTab(t,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.btab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+t).classList.add('active');
+  el.classList.add('active');
+  if(t==='calendar') renderCalendar();
+}
+
+// ── TOAST ────────────────────────────────────────────────
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// ── RENDER TODAY ─────────────────────────────────────────
+function renderToday(){
+  const today=todayStr();
+  const now=new Date();
+  document.getElementById('today-date').textContent=now.toLocaleDateString('el-GR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const todayTasks=tasks.filter(t=>t.date===today).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  const pending=todayTasks.filter(t=>!t.done).length;
+  const done=todayTasks.filter(t=>t.done).length;
+  document.getElementById('ts-total').textContent=todayTasks.length;
+  document.getElementById('ts-pending').textContent=pending;
+  document.getElementById('ts-done').textContent=done;
+  const list=document.getElementById('today-list');
+  if(!todayTasks.length){list.innerHTML='<div class="empty-state">Δεν υπάρχουν εργασίες σήμερα 🎉</div>';return;}
+  list.innerHTML=todayTasks.map(t=>taskCardHTML(t)).join('');
+}
+
+// ── RENDER TASKS ─────────────────────────────────────────
+function renderTasks(){
+  let filtered=tasks.slice().sort((a,b)=>b.id-a.id);
+  if(taskFilter==='pending') filtered=filtered.filter(t=>!t.done);
+  else if(taskFilter==='done') filtered=filtered.filter(t=>t.done);
+  else if(['perisilogi','dianomi','metafora','metakomisi'].includes(taskFilter)) filtered=filtered.filter(t=>t.type===taskFilter);
+  const list=document.getElementById('tasks-list');
+  if(!filtered.length){list.innerHTML='<div class="empty-state">Δεν υπάρχουν εργασίες</div>';return;}
+  list.innerHTML=filtered.map(t=>taskCardHTML(t)).join('');
+}
+function filterTasks(f,el){
+  taskFilter=f;
+  document.querySelectorAll('#page-tasks .filt').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderTasks();
+}
+function taskCardHTML(t){
+  return`<div class="task-card${t.done?' done':''}" id="tc-${t.id}"><div class="tc-top"><button class="tc-check${t.done?' checked':''}" onclick="toggleTask(${t.id})">${t.done?'✓':''}</button><span class="tc-title">${t.client||'—'}</span><span class="tc-type ${TYPE_CLS[t.type]}">${TYPE_LABELS[t.type]}</span><div class="tc-actions"><button class="act-btn" onclick="editTask(${t.id})">✏️</button><button class="act-btn" onclick="delTask(${t.id})">✕</button></div></div><div class="tc-mid">${t.tel?`<a class="tc-phone" href="tel:${t.tel}">📱 ${t.tel}</a>`:''}${t.time?`<span class="tc-time">🕐 ${t.time}</span>`:''}${t.date?`<span style="font-size:10px;color:var(--muted)">${fmtShort(t.date)}</span>`:''}</div><div class="tc-bot">${t.from?`<div class="tc-route">📍 Από: <span>${t.from}</span></div>`:''}${t.to?`<div class="tc-route">🏁 Προς: <span>${t.to}</span></div>`:''}${t.note?`<div class="tc-note">📝 ${t.note}</div>`:''}</div></div>`;
+}
 function toggleTask(id){const t=tasks.find(t=>t.id===id);if(t){t.done=!t.done;persist();renderAll();}}
 function delTask(id){if(!confirm('Διαγραφή;'))return;tasks=tasks.filter(t=>t.id!==id);persist();renderAll();}
-function editTask(id){const t=tasks.find(t=>t.id===id);if(!t)return;openNewModal('task');document.getElementById('f-task-id').value=id;document.getElementById('f-type').value=t.type;document.getElementById('f-time').value=t.time||'';document.getElementById('f-client').value=t.client||'';document.getElementById('f-tel').value=t.tel||'';document.getElementById('f-date').value=t.date||'';document.getElementById('f-from').value=t.from||'';document.getElementById('f-to').value=t.to||'';document.getElementById('f-note').value=t.note||'';}
-function renderOffers(){let filtered=offers.slice().sort((a,b)=>b.id-a.id);if(offerFilter==='waiting')filtered=filtered.filter(o=>o.status==='waiting');else if(offerFilter==='confirmed')filtered=filtered.filter(o=>o.status==='confirmed');else if(offerFilter==='cancelled')filtered=filtered.filter(o=>o.status==='cancelled');const list=document.getElementById('offers-list');if(!filtered.length){list.innerHTML='<div class="empty-state">Δεν υπάρχουν προσφορές</div>';return;}list.innerHTML=filtered.map(o=>`<div class="offer-card${o.status==='confirmed'?' confirmed':o.status==='cancelled'?' cancelled':''}"><div class="oc-top"><span class="oc-name">${o.client||'—'}</span>${o.price?`<span class="oc-price">€${o.price}</span>`:''}</div><div class="oc-mid">${o.tel?`<a class="tc-phone" href="tel:${o.tel}">📱 ${o.tel}</a>`:''}${o.date?`<span class="oc-date">📅 ${fmtShort(o.date)}</span>`:''}</div>${o.desc?`<div style="font-size:11px;color:var(--text);margin-top:5px">🚛 ${o.desc}</div>`:''}${o.note?`<div class="tc-note" style="margin-top:4px">📝 ${o.note}</div>`:''}<div class="oc-bot"><button class="oc-status-btn osb-wait" onclick="setOfferStatus(${o.id},'waiting')">⏳ Αναμονή</button><button class="oc-status-btn osb-confirm" onclick="setOfferStatus(${o.id},'confirmed')">✅ Επιβεβ.</button><button class="oc-status-btn osb-cancel" onclick="setOfferStatus(${o.id},'cancelled')">❌ Ακύρωση</button><button class="act-btn" onclick="editOffer(${o.id})">✏️</button><button class="act-btn" onclick="delOffer(${o.id})">✕</button></div></div>`).join('');}
+function editTask(id){
+  const t=tasks.find(t=>t.id===id);if(!t)return;
+  openNewModal('task');
+  document.getElementById('f-task-id').value=id;
+  document.getElementById('f-type').value=t.type;
+  document.getElementById('f-time').value=t.time||'';
+  document.getElementById('f-client').value=t.client||'';
+  document.getElementById('f-tel').value=t.tel||'';
+  document.getElementById('f-date').value=t.date||'';
+  document.getElementById('f-from').value=t.from||'';
+  document.getElementById('f-to').value=t.to||'';
+  document.getElementById('f-note').value=t.note||'';
+}
+
+// ── RENDER OFFERS ────────────────────────────────────────
+function renderOffers(){
+  let filtered=offers.slice().sort((a,b)=>b.id-a.id);
+  if(offerFilter==='waiting') filtered=filtered.filter(o=>o.status==='waiting');
+  else if(offerFilter==='confirmed') filtered=filtered.filter(o=>o.status==='confirmed');
+  else if(offerFilter==='cancelled') filtered=filtered.filter(o=>o.status==='cancelled');
+  const list=document.getElementById('offers-list');
+  if(!filtered.length){list.innerHTML='<div class="empty-state">Δεν υπάρχουν προσφορές</div>';return;}
+  list.innerHTML=filtered.map(o=>`<div class="offer-card${o.status==='confirmed'?' confirmed':o.status==='cancelled'?' cancelled':''}"><div class="oc-top"><span class="oc-name">${o.client||'—'}</span>${o.price?`<span class="oc-price">€${o.price}</span>`:''}</div><div class="oc-mid">${o.tel?`<a class="tc-phone" href="tel:${o.tel}">📱 ${o.tel}</a>`:''}${o.date?`<span class="oc-date">📅 ${fmtShort(o.date)}</span>`:''}</div>${o.desc?`<div style="font-size:11px;color:var(--text);margin-top:5px">🚛 ${o.desc}</div>`:''}${o.note?`<div class="tc-note" style="margin-top:4px">📝 ${o.note}</div>`:''}<div class="oc-bot"><button class="oc-status-btn osb-wait" onclick="setOfferStatus(${o.id},'waiting')">⏳ Αναμονή</button><button class="oc-status-btn osb-confirm" onclick="setOfferStatus(${o.id},'confirmed')">✅ Επιβεβ.</button><button class="oc-status-btn osb-cancel" onclick="setOfferStatus(${o.id},'cancelled')">❌ Ακύρωση</button><button class="act-btn" onclick="editOffer(${o.id})">✏️</button><button class="act-btn" onclick="delOffer(${o.id})">✕</button></div></div>`).join('');
+}
 function filterOffers(f,el){offerFilter=f;document.querySelectorAll('#page-offers .filt').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderOffers();}
 function setOfferStatus(id,status){const o=offers.find(o=>o.id===id);if(o){o.status=status;persist();renderOffers();}}
 function delOffer(id){if(!confirm('Διαγραφή;'))return;offers=offers.filter(o=>o.id!==id);persist();renderOffers();}
-function editOffer(id){const o=offers.find(o=>o.id===id);if(!o)return;openNewModal('offer');document.getElementById('f-offer-id').value=id;document.getElementById('fo-client').value=o.client||'';document.getElementById('fo-tel').value=o.tel||'';document.getElementById('fo-desc').value=o.desc||'';document.getElementById('fo-price').value=o.price||'';document.getElementById('fo-date').value=o.date||'';document.getElementById('fo-note').value=o.note||'';}
-function renderCalendar(){document.getElementById('cal-month-title').textContent=MONTHS_GR[calMonth]+' '+calYear;const grid=document.getElementById('cal-grid');const firstDay=new Date(calYear,calMonth,1).getDay();const daysInMonth=new Date(calYear,calMonth+1,0).getDate();const today=todayStr();let html='';['Κυρ','Δευ','Τρι','Τετ','Πεμ','Παρ','Σαβ'].forEach((d,i)=>html+=`<div class="cal-day-hdr${i===0||i===6?' wknd':''}">${d}</div>`);for(let i=0;i<firstDay;i++)html+=`<div class="cal-day empty"></div>`;for(let d=1;d<=daysInMonth;d++){const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const dayTasks=tasks.filter(t=>t.date===ds);const isToday=ds===today;html+=`<div class="cal-day${isToday?' today':''}${dayTasks.length?' has-tasks':''}" onclick="showDayDetail('${ds}')"><div class="cal-day-num">${d}</div><div class="cal-day-dots">${dayTasks.slice(0,3).map(t=>`<div class="cal-dot" style="background:${TYPE_COLORS[t.type]}"></div>`).join('')}</div></div>`;}grid.innerHTML=html;document.getElementById('cal-day-detail').innerHTML='';}
+function editOffer(id){
+  const o=offers.find(o=>o.id===id);if(!o)return;
+  openNewModal('offer');
+  document.getElementById('f-offer-id').value=id;
+  document.getElementById('fo-client').value=o.client||'';
+  document.getElementById('fo-tel').value=o.tel||'';
+  document.getElementById('fo-desc').value=o.desc||'';
+  document.getElementById('fo-price').value=o.price||'';
+  document.getElementById('fo-date').value=o.date||'';
+  document.getElementById('fo-note').value=o.note||'';
+}
+
+// ── RENDER CALENDAR ──────────────────────────────────────
+function renderCalendar(){
+  document.getElementById('cal-month-title').textContent=MONTHS_GR[calMonth]+' '+calYear;
+  const grid=document.getElementById('cal-grid');
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const today=todayStr();
+  let html='';
+  ['Κυρ','Δευ','Τρι','Τετ','Πεμ','Παρ','Σαβ'].forEach((d,i)=>html+=`<div class="cal-day-hdr${i===0||i===6?' wknd':''}">${d}</div>`);
+  for(let i=0;i<firstDay;i++) html+=`<div class="cal-day empty"></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dayTasks=tasks.filter(t=>t.date===ds);
+    const isToday=ds===today;
+    html+=`<div class="cal-day${isToday?' today':''}${dayTasks.length?' has-tasks':''}" onclick="showDayDetail('${ds}')"><div class="cal-day-num">${d}</div><div class="cal-day-dots">${dayTasks.slice(0,3).map(t=>`<div class="cal-dot" style="background:${TYPE_COLORS[t.type]}"></div>`).join('')}</div></div>`;
+  }
+  grid.innerHTML=html;
+  document.getElementById('cal-day-detail').innerHTML='';
+}
 function changeMonth(dir){calMonth+=dir;if(calMonth>11){calMonth=0;calYear++;}else if(calMonth<0){calMonth=11;calYear--;}renderCalendar();}
-function showDayDetail(ds){const dayTasks=tasks.filter(t=>t.date===ds).sort((a,b)=>(a.time||'').localeCompare(b.time||''));const el=document.getElementById('cal-day-detail');if(!dayTasks.length){el.innerHTML=`<div class="empty-state" style="padding:10px 0">Καμία εργασία για ${fmtShort(ds)}</div>`;return;}el.innerHTML=`<div style="font-family:'Playfair Display',serif;font-size:14px;margin-bottom:10px;color:var(--accent)">📅 ${fmtShort(ds)}</div>`+dayTasks.map(t=>taskCardHTML(t)).join('');}
-function renderTodos(){let filtered=todos.slice().sort((a,b)=>{if(a.done!==b.done)return a.done?1:-1;if(a.prio==='urgent'&&b.prio!=='urgent')return -1;if(b.prio==='urgent'&&a.prio!=='urgent')return 1;return(a.date||'').localeCompare(b.date||'');});if(todoFilter==='pending')filtered=filtered.filter(t=>!t.done);else if(todoFilter==='urgent')filtered=filtered.filter(t=>t.prio==='urgent'&&!t.done);else if(todoFilter==='done')filtered=filtered.filter(t=>t.done);const list=document.getElementById('todo-list');if(!filtered.length){list.innerHTML='<div class="empty-state">Δεν υπάρχουν εργασίες</div>';return;}list.innerHTML=filtered.map(t=>`<div class="todo-card${t.done?' done':''}${t.prio==='urgent'?' urgent':''}"><div class="todo-top"><button class="tc-check${t.done?' checked':''}" onclick="toggleTodo(${t.id})">${t.done?'✓':''}</button><span class="todo-title">${t.title}</span>${t.prio==='urgent'?'<span class="prio-badge prio-urgent">Επείγον</span>':''}<div class="tc-actions" style="margin-left:auto"><button class="act-btn" onclick="editTodo(${t.id})">✏️</button><button class="act-btn" onclick="delTodo(${t.id})">✕</button></div></div>${t.date?`<div style="font-size:10px;color:var(--muted);margin-top:4px;margin-left:28px">📅 ${fmtShort(t.date)}</div>`:''}${t.note?`<div class="tc-note" style="margin-left:28px">📝 ${t.note}</div>`:''}</div>`).join('');}
-function filterTodos(f,el){todoFilter=f;document.querySelectorAll('#page-todo .filt').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderTodos();}
+function showDayDetail(ds){
+  const dayTasks=tasks.filter(t=>t.date===ds).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  const el=document.getElementById('cal-day-detail');
+  if(!dayTasks.length){el.innerHTML=`<div class="empty-state" style="padding:10px 0">Καμία εργασία για ${fmtShort(ds)}</div>`;return;}
+  el.innerHTML=`<div style="font-family:'Playfair Display',serif;font-size:14px;margin-bottom:10px;color:var(--accent)">📅 ${fmtShort(ds)}</div>`+dayTasks.map(t=>taskCardHTML(t)).join('');
+}
+
+// ── RENDER TODOS ─────────────────────────────────────────
+function renderTodos(){
+  let filtered=todos.slice().sort((a,b)=>{
+    if(a.done!==b.done) return a.done?1:-1;
+    if(a.prio==='urgent'&&b.prio!=='urgent') return -1;
+    if(b.prio==='urgent'&&a.prio!=='urgent') return 1;
+    return (a.date||'').localeCompare(b.date||'');
+  });
+  if(todoFilter==='pending') filtered=filtered.filter(t=>!t.done);
+  else if(todoFilter==='urgent') filtered=filtered.filter(t=>t.prio==='urgent'&&!t.done);
+  else if(todoFilter==='done') filtered=filtered.filter(t=>t.done);
+
+  // Show/hide delete-all button
+  const doneCount = todos.filter(t=>t.done).length;
+  const delBtn = document.getElementById('btn-del-all');
+  if(todoFilter==='done' && doneCount>0) delBtn.classList.add('visible');
+  else delBtn.classList.remove('visible');
+
+  const list=document.getElementById('todo-list');
+  if(!filtered.length){list.innerHTML='<div class="empty-state">Δεν υπάρχουν εργασίες</div>';return;}
+  list.innerHTML=filtered.map(t=>`<div class="todo-card${t.done?' done':''}${t.prio==='urgent'?' urgent':''}"><div class="todo-top"><button class="tc-check${t.done?' checked':''}" onclick="toggleTodo(${t.id})">${t.done?'✓':''}</button><span class="todo-title">${t.title}</span>${t.prio==='urgent'?'<span class="prio-badge prio-urgent">Επείγον</span>':''}<div class="tc-actions" style="margin-left:auto"><button class="act-btn" onclick="editTodo(${t.id})">✏️</button><button class="act-btn" onclick="delTodo(${t.id})">✕</button></div></div>${t.date?`<div style="font-size:10px;color:var(--muted);margin-top:4px;margin-left:28px">📅 ${fmtShort(t.date)}</div>`:''}${t.note?`<div class="tc-note" style="margin-left:28px">📝 ${t.note}</div>`:''}</div>`).join('');
+}
+function filterTodos(f,el){
+  todoFilter=f;
+  document.querySelectorAll('#page-todo .filt').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderTodos();
+}
 function toggleTodo(id){const t=todos.find(t=>t.id===id);if(t){t.done=!t.done;persist();renderTodos();}}
 function delTodo(id){if(!confirm('Διαγραφή;'))return;todos=todos.filter(t=>t.id!==id);persist();renderTodos();}
-function editTodo(id){const t=todos.find(t=>t.id===id);if(!t)return;openNewModal('todo');document.getElementById('f-todo-id').value=id;document.getElementById('ft-title').value=t.title||'';document.getElementById('ft-date').value=t.date||'';document.getElementById('ft-prio').value=t.prio||'normal';document.getElementById('ft-note').value=t.note||'';}
-function openNewModal(tab){tab=tab||'task';currentModalTab=tab;document.querySelectorAll('.modal-tab').forEach((el,i)=>el.classList.toggle('active',['task','offer','todo'][i]===tab));document.getElementById('mform-task').style.display=tab==='task'?'block':'none';document.getElementById('mform-offer').style.display=tab==='offer'?'block':'none';document.getElementById('mform-todo').style.display=tab==='todo'?'block':'none';document.getElementById('f-task-id').value='';document.getElementById('f-offer-id').value='';document.getElementById('f-todo-id').value='';document.getElementById('f-date').value=todayStr();document.getElementById('fo-date').value=todayStr();document.getElementById('ft-date').value=todayStr();document.getElementById('modal').classList.add('open');}
-function switchModalTab(tab,el){currentModalTab=tab;document.querySelectorAll('.modal-tab').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.getElementById('mform-task').style.display=tab==='task'?'block':'none';document.getElementById('mform-offer').style.display=tab==='offer'?'block':'none';document.getElementById('mform-todo').style.display=tab==='todo'?'block':'none';}
+function editTodo(id){
+  const t=todos.find(t=>t.id===id);if(!t)return;
+  openNewModal('todo');
+  document.getElementById('f-todo-id').value=id;
+  document.getElementById('ft-title').value=t.title||'';
+  document.getElementById('ft-date').value=t.date||'';
+  document.getElementById('ft-prio').value=t.prio||'normal';
+  document.getElementById('ft-note').value=t.note||'';
+}
+
+// ── DELETE ALL DONE TODOS ─────────────────────────────────
+function deleteAllDoneTodos(){
+  const doneCount=todos.filter(t=>t.done).length;
+  if(!doneCount) return;
+  if(!confirm(`Διαγραφή ${doneCount} ολοκληρωμένων εργασιών;`)) return;
+  todos=todos.filter(t=>!t.done);
+  persist();
+  renderTodos();
+  showToast(`✅ Διαγράφηκαν ${doneCount} ολοκληρωμένες`);
+}
+
+// ── MODAL ────────────────────────────────────────────────
+function openNewModal(tab){
+  tab=tab||'task';
+  currentModalTab=tab;
+  document.querySelectorAll('.modal-tab').forEach((el,i)=>el.classList.toggle('active',['task','offer','todo'][i]===tab));
+  document.getElementById('mform-task').style.display=tab==='task'?'block':'none';
+  document.getElementById('mform-offer').style.display=tab==='offer'?'block':'none';
+  document.getElementById('mform-todo').style.display=tab==='todo'?'block':'none';
+  document.getElementById('f-task-id').value='';
+  document.getElementById('f-offer-id').value='';
+  document.getElementById('f-todo-id').value='';
+  document.getElementById('f-date').value=todayStr();
+  document.getElementById('fo-date').value=todayStr();
+  document.getElementById('ft-date').value=todayStr();
+  document.getElementById('modal').classList.add('open');
+}
+function switchModalTab(tab,el){
+  currentModalTab=tab;
+  document.querySelectorAll('.modal-tab').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('mform-task').style.display=tab==='task'?'block':'none';
+  document.getElementById('mform-offer').style.display=tab==='offer'?'block':'none';
+  document.getElementById('mform-todo').style.display=tab==='todo'?'block':'none';
+}
 function closeModal(){document.getElementById('modal').classList.remove('open');}
 document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal();});
-function saveEntry(){if(currentModalTab==='task'){const client=document.getElementById('f-client').value.trim();if(!client){alert('Συμπλήρωσε τουλάχιστον τον πελάτη!');return;}const editId=document.getElementById('f-task-id').value;const data={type:document.getElementById('f-type').value,client,tel:document.getElementById('f-tel').value.trim(),time:document.getElementById('f-time').value,date:document.getElementById('f-date').value,from:document.getElementById('f-from').value.trim(),to:document.getElementById('f-to').value.trim(),note:document.getElementById('f-note').value.trim(),done:false};if(editId){const idx=tasks.findIndex(t=>t.id===Number(editId));if(idx>-1)tasks[idx]={...tasks[idx],...data,done:tasks[idx].done};}else tasks.push({id:Date.now(),...data});}else if(currentModalTab==='offer'){const client=document.getElementById('fo-client').value.trim();if(!client){alert('Συμπλήρωσε τουλάχιστον τον πελάτη!');return;}const editId=document.getElementById('f-offer-id').value;const data={client,tel:document.getElementById('fo-tel').value.trim(),desc:document.getElementById('fo-desc').value.trim(),price:document.getElementById('fo-price').value,date:document.getElementById('fo-date').value,note:document.getElementById('fo-note').value.trim(),status:'waiting'};if(editId){const idx=offers.findIndex(o=>o.id===Number(editId));if(idx>-1)offers[idx]={...offers[idx],...data,status:offers[idx].status};}else offers.push({id:Date.now(),...data});}else if(currentModalTab==='todo'){const title=document.getElementById('ft-title').value.trim();if(!title){alert('Γράψε τι πρέπει να κάνεις!');return;}const editId=document.getElementById('f-todo-id').value;const data={title,date:document.getElementById('ft-date').value,prio:document.getElementById('ft-prio').value,note:document.getElementById('ft-note').value.trim(),done:false};if(editId){const idx=todos.findIndex(t=>t.id===Number(editId));if(idx>-1)todos[idx]={...todos[idx],...data,done:todos[idx].done};}else todos.push({id:Date.now(),...data});}closeModal();persist();renderAll();}
-function persist(){localStorage.setItem('salv_tasks',JSON.stringify(tasks));localStorage.setItem('salv_offers',JSON.stringify(offers));localStorage.setItem('salv_todos',JSON.stringify(todos));}
+
+function saveEntry(){
+  if(currentModalTab==='task'){
+    const client=document.getElementById('f-client').value.trim();
+    if(!client){alert('Συμπλήρωσε τουλάχιστον τον πελάτη!');return;}
+    const editId=document.getElementById('f-task-id').value;
+    const data={type:document.getElementById('f-type').value,client,tel:document.getElementById('f-tel').value.trim(),time:document.getElementById('f-time').value,date:document.getElementById('f-date').value,from:document.getElementById('f-from').value.trim(),to:document.getElementById('f-to').value.trim(),note:document.getElementById('f-note').value.trim(),done:false};
+    if(editId){const idx=tasks.findIndex(t=>t.id===Number(editId));if(idx>-1)tasks[idx]={...tasks[idx],...data,done:tasks[idx].done};}
+    else tasks.push({id:Date.now(),...data});
+  } else if(currentModalTab==='offer'){
+    const client=document.getElementById('fo-client').value.trim();
+    if(!client){alert('Συμπλήρωσε τουλάχιστον τον πελάτη!');return;}
+    const editId=document.getElementById('f-offer-id').value;
+    const data={client,tel:document.getElementById('fo-tel').value.trim(),desc:document.getElementById('fo-desc').value.trim(),price:document.getElementById('fo-price').value,date:document.getElementById('fo-date').value,note:document.getElementById('fo-note').value.trim(),status:'waiting'};
+    if(editId){const idx=offers.findIndex(o=>o.id===Number(editId));if(idx>-1)offers[idx]={...offers[idx],...data,status:offers[idx].status};}
+    else offers.push({id:Date.now(),...data});
+  } else if(currentModalTab==='todo'){
+    const title=document.getElementById('ft-title').value.trim();
+    if(!title){alert('Γράψε τι πρέπει να κάνεις!');return;}
+    const editId=document.getElementById('f-todo-id').value;
+    const data={title,date:document.getElementById('ft-date').value,prio:document.getElementById('ft-prio').value,note:document.getElementById('ft-note').value.trim(),done:false};
+    if(editId){const idx=todos.findIndex(t=>t.id===Number(editId));if(idx>-1)todos[idx]={...todos[idx],...data,done:todos[idx].done};}
+    else todos.push({id:Date.now(),...data});
+  }
+  closeModal();persist();renderAll();
+}
+
+// ── PERSIST ──────────────────────────────────────────────
+function persist(){
+  localStorage.setItem('salv_tasks',JSON.stringify(tasks));
+  localStorage.setItem('salv_offers',JSON.stringify(offers));
+  localStorage.setItem('salv_todos',JSON.stringify(todos));
+  // clips saved separately (large dataURLs)
+  try{ localStorage.setItem('salv_clips',JSON.stringify(clips)); }catch(e){ showToast('⚠️ Δεν χωράνε άλλα clips - διάγραψε παλιά'); }
+}
+
 function renderAll(){renderToday();renderTasks();renderOffers();renderTodos();}
+
+// ── VOICE RECORDING ──────────────────────────────────────
+let mediaRecorder = null;
+let audioChunks   = [];
+let recTimer      = null;
+let recSeconds    = 0;
+let isRecording   = false;
+
+async function toggleRecording(){
+  if(isRecording){
+    stopRecording();
+  } else {
+    await startRecording();
+  }
+}
+
+async function startRecording(){
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+    mediaRecorder.ondataavailable = e => { if(e.data.size>0) audioChunks.push(e.data); };
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(audioChunks, {type:'audio/webm'});
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const now = new Date();
+        const label = `${now.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit'})} — ${now.toLocaleDateString('el-GR',{day:'2-digit',month:'2-digit'})}`;
+        const clip = {id:Date.now(), label, ts: now.toISOString(), dataUrl: reader.result, duration: recSeconds};
+        clips.unshift(clip);
+        if(clips.length > 20) clips = clips.slice(0,20); // keep max 20
+        persist();
+        renderClips();
+      };
+      reader.readAsDataURL(blob);
+      stream.getTracks().forEach(t=>t.stop());
+    };
+    mediaRecorder.start();
+    isRecording = true;
+    recSeconds  = 0;
+    document.getElementById('btn-record').className='btn-record recording';
+    document.getElementById('btn-record').textContent='⏹️';
+    document.getElementById('voice-status').className='voice-status recording';
+    document.getElementById('voice-status').textContent='Εγγραφή...';
+    recTimer = setInterval(()=>{
+      recSeconds++;
+      const m=Math.floor(recSeconds/60);
+      const s=recSeconds%60;
+      document.getElementById('voice-timer').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    },1000);
+  } catch(err){
+    alert('Δεν επιτράπηκε η πρόσβαση στο μικρόφωνο.');
+  }
+}
+
+function stopRecording(){
+  if(mediaRecorder && mediaRecorder.state!=='inactive') mediaRecorder.stop();
+  clearInterval(recTimer);
+  isRecording=false;
+  document.getElementById('btn-record').className='btn-record idle';
+  document.getElementById('btn-record').textContent='🎙️';
+  document.getElementById('voice-status').className='voice-status';
+  document.getElementById('voice-status').textContent='Αποθηκεύτηκε ✓';
+  document.getElementById('voice-timer').textContent='';
+  setTimeout(()=>{ document.getElementById('voice-status').textContent='Πάτα για εγγραφή'; },2000);
+}
+
+function renderClips(){
+  const el=document.getElementById('voice-clips');
+  if(!clips.length){ el.innerHTML=''; return; }
+  el.innerHTML=clips.map(c=>`
+    <div class="voice-clip" id="clip-${c.id}">
+      <button class="clip-play" onclick="playClip(${c.id})">▶</button>
+      <div class="clip-info">
+        <div class="clip-label">${c.label}</div>
+        <div class="clip-time">${c.duration?Math.floor(c.duration/60)+'m '+c.duration%60+'s':''}</div>
+      </div>
+      <audio id="audio-${c.id}" src="${c.dataUrl}"></audio>
+      <button class="clip-del" onclick="delClip(${c.id})">✕</button>
+    </div>
+  `).join('');
+}
+
+function playClip(id){
+  // pause all others
+  clips.forEach(c=>{ const a=document.getElementById('audio-'+c.id); if(a) a.pause(); });
+  const audio=document.getElementById('audio-'+id);
+  const btn=document.querySelector(`#clip-${id} .clip-play`);
+  if(audio.paused){ audio.play(); if(btn) btn.textContent='⏸'; audio.onended=()=>{ if(btn) btn.textContent='▶'; }; }
+  else{ audio.pause(); if(btn) btn.textContent='▶'; }
+}
+
+function delClip(id){
+  if(!confirm('Διαγραφή ηχητικής σημείωσης;')) return;
+  clips=clips.filter(c=>c.id!==id);
+  persist();
+  renderClips();
+}
+
+// ── PUSH NOTIFICATIONS ───────────────────────────────────
+let notifEnabled = localStorage.getItem('salv_notif') === '1';
+let notifTimer   = null;
+
+function updateNotifBtn(){
+  const btn=document.getElementById('btn-notif');
+  btn.classList.toggle('active', notifEnabled);
+  btn.title = notifEnabled ? 'Ειδοποιήσεις 08:00 ενεργές' : 'Ειδοποιήσεις 08:00 ανενεργές';
+}
+
+async function toggleNotifications(){
+  if(!notifEnabled){
+    if(!('Notification' in window)){
+      alert('Ο browser σου δεν υποστηρίζει notifications.\nΓια iOS: άνοιξε σαν PWA από την αρχική οθόνη.');
+      return;
+    }
+    const perm = await Notification.requestPermission();
+    if(perm !== 'granted'){
+      alert('Δεν δόθηκε άδεια για notifications.\nΈλεγξε τις ρυθμίσεις του Safari.');
+      return;
+    }
+    notifEnabled=true;
+    localStorage.setItem('salv_notif','1');
+    scheduleDaily0800();
+    showToast('🔔 Ειδοποιήσεις 08:00 ενεργοποιήθηκαν');
+  } else {
+    notifEnabled=false;
+    localStorage.setItem('salv_notif','0');
+    if(notifTimer){ clearTimeout(notifTimer); notifTimer=null; }
+    showToast('🔕 Ειδοποιήσεις απενεργοποιήθηκαν');
+  }
+  updateNotifBtn();
+}
+
+function scheduleDaily0800(){
+  if(!notifEnabled) return;
+  const now=new Date();
+  const next=new Date();
+  next.setHours(8,0,0,0);
+  if(now>=next) next.setDate(next.getDate()+1);
+  const ms=next-now;
+  notifTimer=setTimeout(()=>{
+    fireNotification();
+    scheduleDaily0800(); // reschedule for tomorrow
+  }, ms);
+}
+
+function fireNotification(){
+  const today=todayStr();
+  const pendingTasks=tasks.filter(t=>t.date===today&&!t.done);
+  const pendingTodos=todos.filter(t=>!t.done);
+  const total=pendingTasks.length+pendingTodos.length;
+  if(!total) return;
+  let body='';
+  if(pendingTasks.length) body+=`📋 ${pendingTasks.length} εργασία${pendingTasks.length>1?'ες':''} σήμερα\n`;
+  if(pendingTodos.length) body+=`✅ ${pendingTodos.length} εκκρεμές To Do`;
+  try{
+    new Notification('🚛 Salvanos — Καλημέρα!',{body:body.trim(),icon:'/favicon.ico',badge:'/favicon.ico'});
+  }catch(e){}
+  // also show in-app banner
+  showBanner(pendingTasks, pendingTodos);
+}
+
+function showBanner(pendingTasks, pendingTodos){
+  const items=[];
+  pendingTasks.forEach(t=>items.push(`${TYPE_LABELS[t.type]}: ${t.client}${t.time?' @ '+t.time:''}`));
+  pendingTodos.forEach(t=>items.push(t.title));
+  const banner=document.getElementById('notif-banner');
+  const list=document.getElementById('notif-items');
+  list.innerHTML=items.map(i=>`<div class="notif-item">${i}</div>`).join('');
+  banner.classList.add('visible');
+}
+
+function closeBanner(){
+  document.getElementById('notif-banner').classList.remove('visible');
+}
+
+// Manual banner for "show me pending" — fires on page load if it's morning
+function checkMorningBanner(){
+  const now=new Date();
+  const h=now.getHours();
+  if(h>=8&&h<10){ // show banner between 8-10am if notif enabled
+    if(notifEnabled){
+      const today=todayStr();
+      const pt=tasks.filter(t=>t.date===today&&!t.done);
+      const ptd=todos.filter(t=>!t.done);
+      if(pt.length||ptd.length) showBanner(pt,ptd);
+    }
+  }
+}
+
+// ── INIT ─────────────────────────────────────────────────
 renderAll();
+renderClips();
+updateNotifBtn();
+if(notifEnabled) scheduleDaily0800();
+checkMorningBanner();
 </script>
 </body>
 </html>
